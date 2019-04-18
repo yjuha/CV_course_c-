@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.5)
+project( ex3 )
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++11)
+find_package( OpenCV REQUIRED )
+add_executable( ex3 main.cpp utils.cpp )
+target_link_libraries( ex3 ${OpenCV_LIBS} )
