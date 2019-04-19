@@ -3,6 +3,7 @@
 
 #include <opencv2/opencv.hpp>
 
-void imnoise(cv::Mat& src, float prob);
+void gaussian(cv::Mat& src, float prob);
+void imnoise(cv::Mat& src, std::string mode, float prob);
 
 #endif

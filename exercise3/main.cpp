@@ -32,7 +32,8 @@ int main(int argc, char** argv ) {
     grayf /= 255.;
 
     //! Apply "salt'n pepa" noise
-    imnoise(grayf, 0.05);
+    // options: (1) "salt-&-pepper", (2) "gaussian", (3) ...
+    imnoise(grayf, "salt-&-pepper", 0.05);
 
     cv::namedWindow("Display Image", cv::WINDOW_AUTOSIZE );
     cv::imshow("Display Image", grayf);
