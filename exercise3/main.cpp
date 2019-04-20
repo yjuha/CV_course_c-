@@ -40,5 +40,18 @@ int main(int argc, char** argv ) {
 
     cv::waitKey(0);
 
+    int ksize = 13;
+    double sigma = 2.5;
+    int ktype = CV_32F;
+    cv::Mat k = cv::getGaussianKernel(ksize, sigma, ktype);
+    cv::Mat dst;
+
+    cv::filter2D(grayf, dst, grayf.depth(), k);
+
+    cv::namedWindow( "Display Image", cv::WINDOW_AUTOSIZE );
+    cv::imshow("Display Image", dst);
+
+    cv::waitKey(0);
+
     return 0;
 }

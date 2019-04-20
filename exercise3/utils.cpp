@@ -11,8 +11,6 @@ noise_modes lut (std::string const& ncode) {
     if (ncode == "gaussian") return gaussian_noise;
 }
 
-
-
 void gaussian(cv::Mat& src, float prob) {
     
     //! Random number generator
@@ -80,32 +78,20 @@ void imnoise(cv::Mat& src, std::string noise_mode, float prob) {
         default:
             std::cout << "Not implemented" << std::endl;
     }
+}
 
-/*
-    if ( mode == "salt-&-pepper" ) {
-        std::default_random_engine generator;
-        std::uniform_real_distribution<float> distribution(0, 1);
+void conv2D(cv::Mat& src, cv::Mat& dst, cv::Mat& k) {
 
-        int rows = src.rows;
-        int cols = src.cols;
+    int i, j;
+    int k, l;
 
-        int i, j;
-        float* p;
+    int rowsk = k.rows;
+    int colsk = k.cols;
 
-        for ( i = 0; i < rows; ++i ) {
-            p = src.ptr<float>(i);
-            for ( j = 0; j < cols; ++j ) {
-                float number = distribution(generator);
-                if (number < prob) {
-                    p[j] = 0;
-                } else if (number > 1 - prob) {
-                    p[j] = 1;
-                }
-            }
-        }    
+    int rows = src.rows;
+    int cols = src.cols;
 
-    } else if ( mode == "gaussian" ) {
-        gaussian(src, prob);
-
-    }*/
+    for ( j = (rowsk-1) / 2; j < rows - (rowsk-1) / 2; ++j ) {
+        
+    }
 }
