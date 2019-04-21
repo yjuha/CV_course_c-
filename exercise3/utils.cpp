@@ -81,17 +81,24 @@ void imnoise(cv::Mat& src, std::string noise_mode, float prob) {
 }
 
 void conv2D(cv::Mat& src, cv::Mat& dst, cv::Mat& k) {
+    double *srcData = (double*) src.data;
 
-    int i, j;
-    int k, l;
+    int width = src.cols;
+    int height = src.rows;
 
-    int rowsk = k.rows;
-    int colsk = k.cols;
+    int kw = k.cols;
+    int kh = k.rows;
 
-    int rows = src.rows;
-    int cols = src.cols;
+    for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) {
+	    for (int ki = 0; ki < kw; ki++) {
+	        for (int kj = 0; kj < kh; kj++) {
+            	    double val = srcData[(i + ki) * width + (j + kj)] * k[ki * kw + kj];
 
-    for ( j = (rowsk-1) / 2; j < rows - (rowsk-1) / 2; ++j ) {
-        
+
+		}   
+	    }
+        }
     }
+
 }
