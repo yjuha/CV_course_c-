@@ -24,7 +24,7 @@ int main(int argc, char** argv ) {
 
     //! Convert image to grayscale
     cv::Mat gray;
-    cv::cvtColor(image, gray, CV_BGR2GRAY);
+    cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
 
     //! Convert from CV_8U to CV_32F, and scale to the range [0,1]
     cv::Mat grayf;
@@ -33,7 +33,7 @@ int main(int argc, char** argv ) {
 
     //! Apply "salt'n pepa" noise
     // options: (1) "salt-&-pepper", (2) "gaussian", (3) ...
-    imnoise(grayf, "salt-&-pepper", 0.05);
+    //imnoise(grayf, "salt-&-pepper", 0.05);
 
     cv::namedWindow("Display Image", cv::WINDOW_AUTOSIZE );
     cv::imshow("Display Image", grayf);
@@ -44,9 +44,15 @@ int main(int argc, char** argv ) {
     double sigma = 2.5;
     int ktype = CV_32F;
     cv::Mat k = cv::getGaussianKernel(ksize, sigma, ktype);
-    cv::Mat dst;
+    cv::Mat dst (grayf.size(), CV_32F, cv::Scalar(0));	
 
     cv::filter2D(grayf, dst, grayf.depth(), k);
+
+    cv::Mat A = (cv::Mat_<float>(4,4) << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+    cv::Mat B = (cv::Mat_<float>(4,4) << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    cv::Mat C = (cv::Mat_<float>(3,3) << 0, -1, 0, -1, 5, -1, 0, -1, 0);
+
+    conv2D(grayf, dst, k);
 
     cv::namedWindow( "Display Image", cv::WINDOW_AUTOSIZE );
     cv::imshow("Display Image", dst);
