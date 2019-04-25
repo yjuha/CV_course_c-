@@ -33,7 +33,7 @@ int main(int argc, char** argv ) {
 
     //! Apply "salt'n pepa" noise
     // options: (1) "salt-&-pepper", (2) "gaussian", (3) ...
-    //imnoise(grayf, "salt-&-pepper", 0.05);
+    imnoise(grayf, "salt-&-pepper", 0.05);
 
     cv::namedWindow("Display Image", cv::WINDOW_AUTOSIZE );
     cv::imshow("Display Image", grayf);
@@ -46,13 +46,12 @@ int main(int argc, char** argv ) {
     cv::Mat k = cv::getGaussianKernel(ksize, sigma, ktype);
     cv::Mat dst (grayf.size(), CV_32F, cv::Scalar(0));	
 
-    cv::filter2D(grayf, dst, grayf.depth(), k);
+    int ksize_median = 3;
+    cv::medianBlur(grayf, dst, ksize_median); 
 
-    cv::Mat A = (cv::Mat_<float>(4,4) << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-    cv::Mat B = (cv::Mat_<float>(4,4) << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    cv::Mat C = (cv::Mat_<float>(3,3) << 0, -1, 0, -1, 5, -1, 0, -1, 0);
+    /*cv::filter2D(grayf, dst, grayf.depth(), k);
 
-    conv2D(grayf, dst, k);
+    conv2D(grayf, dst, k); */
 
     cv::namedWindow( "Display Image", cv::WINDOW_AUTOSIZE );
     cv::imshow("Display Image", dst);
