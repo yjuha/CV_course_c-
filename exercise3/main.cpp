@@ -1,9 +1,16 @@
+#include <QApplication>
+#include <QtCore>
+#include <QtGui>
+#include <QLabel>
+#include <QImage>
+#include <QGridLayout>
+
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
 #include "utils.h"
 
-int main(int argc, char** argv ) {
+int main( int argc, char** argv ) {
 
     //! Help 
     if ( argc != 2 )
@@ -25,9 +32,9 @@ int main(int argc, char** argv ) {
     //! Convert image to grayscale
     cv::Mat gray;
     cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
-
+    cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
     //! Convert from CV_8U to CV_32F, and scale to the range [0,1]
-    cv::Mat grayf;
+/*    cv::Mat grayf;
     gray.convertTo(grayf, CV_32F);
     grayf /= 255.;
 
@@ -49,14 +56,47 @@ int main(int argc, char** argv ) {
     int ksize_median = 3;
     cv::medianBlur(grayf, dst, ksize_median); 
 
-    /*cv::filter2D(grayf, dst, grayf.depth(), k);
+    cv::filter2D(grayf, dst, grayf.depth(), k);
 
-    conv2D(grayf, dst, k); */
+    conv2D(grayf, dst, k);
 
     cv::namedWindow( "Display Image", cv::WINDOW_AUTOSIZE );
     cv::imshow("Display Image", dst);
 
-    cv::waitKey(0);
+    cv::waitKey(0); */
 
-    return 0;
+    //! Qt related stuff 
+    QApplication app(argc, argv);
+    QImage qimg(gray.data, 
+            gray.cols, 
+            gray.rows, 
+            static_cast<int>(gray.step), 
+            QImage::Format_Grayscale8);
+    QImage qimg2(image.data, 
+            image.cols, 
+            image.rows, 
+            static_cast<int>(image.step), 
+            QImage::Format_RGB888);
+ 
+    QGridLayout *gridLayout = new QGridLayout;
+    QLabel *qlabel = new QLabel;
+    QLabel *qlabel2 = new QLabel;
+
+    QLabel *tlabel1 = new QLabel;
+    tlabel1->setText("grayscale"); 
+
+    qlabel->setPixmap(QPixmap::fromImage(qimg));
+    qlabel2->setPixmap(QPixmap::fromImage(qimg2));
+
+    gridLayout->addWidget(tlabel1, 0,0,1,1);
+    gridLayout->addWidget(qlabel, 1, 0, 1, 1);
+    gridLayout->addWidget(qlabel2, 1, 1, 1, 1);
+
+    QWidget *w = new QWidget();
+
+    w->setLayout(gridLayout);
+    w->setWindowTitle("Grid Layouts");
+    w->show();
+    return app.exec();
+
 }
