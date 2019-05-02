@@ -1,5 +1,6 @@
 #include "utils.h"
 #include <random>
+#include <cmath>
 
 enum noise_modes {
     saltnpepa_noise,
@@ -121,6 +122,45 @@ void conv2D(cv::Mat& _src, cv::Mat& _dst, cv::Mat& _k) {
 
 }
 
-void bilateral(cv::Mat& src, cv::Mat& dst, int kd, float sigmad, float sigmar) {
+void bilateral(cv::Mat& _src, cv::Mat& _dst, int _k, float sigmad, float sigmar) {
+
+    int top = static_cast<int>(_k / 2);
+    int bottom = top;
+    int left = static_cast<int>(_k / 2);
+    int right = left;
+
+    cv::Mat src;
+    int value = 0;
+    int borderType = cv::BORDER_CONSTANT;
+
+    cv::copyMakeBorder(_src, src, top, bottom, left, right, borderType, value);
+
+    float *srcData = (float*) src.data;
+    float *dstData = (float*) _dst.data;
+
+    int width = src.cols;
+    int height = src.rows;
+    int dstWidth = _dst.cols;
+
+    // 2d convolution
+    for(int i = top; i < height - top; i++) {
+        for(int j = left; j < width - left; j++) {
+            float val = 0;
+            float wtotal = 0;
+	        float cpxlval = srcData[i * width + j];
+	        for (int ki = -top; ki < top; ki++) {
+	            for (int kj = -left; kj < left; kj++) {
+                    float pxlval = srcData[(i + ki) * width + (j + kj)];
+
+                    float wd = exp ( - (pow(ki, 2) + pow(kj, 2)) / (2 * pow(sigmad, 2)) );
+                    float wr = exp ( - pow(cpxlval - pxlval, 2) / (2 * pow(sigmar, 2)) );
+                    wtotal += wd * wr; 
+            	    val += pxlval * wd * wr;
+		        }   
+	        }
+	        dstData[(i-top) * dstWidth + (j-left)] = val / wtotal;
+        }
+    }
+
 
 }

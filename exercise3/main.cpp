@@ -59,7 +59,8 @@ int main( int argc, char** argv ) {
 
     cv::Mat graygn_mf (graygn.size(), CV_32F, cv::Scalar(0));
     cv::Mat graygn_gf (graygn.size(), CV_32F, cv::Scalar(0));
-    
+    cv::Mat graygn_bf (graygn.size(), CV_32F, cv::Scalar(0));
+
     //! Apply 3x3 median filter to sp corrupted image
     int ksize_median = 5;
     cv::medianBlur(graysp, graysp_mf, ksize_median); 
@@ -73,6 +74,11 @@ int main( int argc, char** argv ) {
     //cv::filter2D(graysp, graysp_gf, graysp.depth(), k);
     conv2D(graysp, graysp_gf, k);
     conv2D(graygn, graygn_gf, k);
+
+    float k_size = 11;
+    float sigmad = 2.5;
+    float sigmar = 0.1;
+    bilateral(graygn, graygn_bf, k_size, sigmad, sigmar);
 
     //! Convert noise corrupted images from CV_32F to CV_8U
     cv::Mat graysp_8U;
