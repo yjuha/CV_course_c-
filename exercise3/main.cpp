@@ -72,9 +72,9 @@ int main( int argc, char** argv ) {
     cv::Mat k = cv::getGaussianKernel(ksize, sigma, ktype);
     //cv::filter2D(graysp, graysp_gf, graysp.depth(), k);
     conv2D(graysp, graysp_gf, k);
-    conv2D(graygn, graygn_mf, k);
+    conv2D(graygn, graygn_gf, k);
 
-    //! Convert from CV_32F to CV_8U
+    //! Convert noise corrupted images from CV_32F to CV_8U
     cv::Mat graysp_8U;
     graysp *= 255.;
     graysp.convertTo(graysp_8U, CV_8U);
@@ -120,7 +120,7 @@ int main( int argc, char** argv ) {
     QWidget *w = new QWidget();
 
     w->setLayout(gridLayout);
-    w->setWindowTitle("Grid Layouts");
+    w->setWindowTitle("Original and noise corrupted images");
     w->show();
     
     //! Result images of median filtering
@@ -163,8 +163,51 @@ int main( int argc, char** argv ) {
     QWidget *w2 = new QWidget();
 
     w2->setLayout(gridLayout2);
-    w2->setWindowTitle("Grid Layouts");
+    w2->setWindowTitle("Salt-and-pepper results");
     w2->show();
+ 
+    //! Result images of median filtering
+    cv::Mat graygn_mf_U8;
+    graygn_mf *= 255.;
+    graygn_mf.convertTo(graygn_mf_U8, CV_8U);
+
+    cv::Mat graygn_gf_U8;
+    graygn_gf *= 255.;
+    graygn_gf.convertTo(graygn_gf_U8, CV_8U);
+
+    QGridLayout *gridLayout3 = new QGridLayout;
+
+    QLabel *tlabel8 = new QLabel;
+    QLabel *tlabel9 = new QLabel;
+    QLabel *tlabel10 = new QLabel;
+
+    QLabel *qlabel8 = new QLabel;
+    QLabel *qlabel9 = new QLabel;
+    QLabel *qlabel10 = new QLabel;
+
+    tlabel8->setText("gaussian noise");
+    tlabel9->setText("gaussian filtered");
+    tlabel10->setText("median filtered");
+
+    QImage qgraygn_mf = qtutils::cvmat2qimg(graygn_mf_U8);
+    QImage qgraygn_gf = qtutils::cvmat2qimg(graygn_gf_U8);
+
+    qlabel8->setPixmap(QPixmap::fromImage(qimg_gn));
+    qlabel9->setPixmap(QPixmap::fromImage(qgraygn_gf));
+    qlabel10->setPixmap(QPixmap::fromImage(qgraygn_mf));
+
+    gridLayout3->addWidget(tlabel8, 0, 0, 1, 1, Qt::AlignCenter);
+    gridLayout3->addWidget(tlabel9, 0, 1, 1, 1, Qt::AlignCenter);
+    gridLayout3->addWidget(tlabel10, 0, 2, 1, 1, Qt::AlignCenter);
+    gridLayout3->addWidget(qlabel8, 1, 0, 1, 1);
+    gridLayout3->addWidget(qlabel9, 1, 1, 1, 1);
+    gridLayout3->addWidget(qlabel10, 1, 2, 1, 1);
+
+    QWidget *w3 = new QWidget();
+
+    w3->setLayout(gridLayout3);
+    w3->setWindowTitle("Gaussian noise results");
+    w3->show();
  
     return app.exec();
 

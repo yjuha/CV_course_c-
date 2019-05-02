@@ -120,3 +120,7 @@ void conv2D(cv::Mat& _src, cv::Mat& _dst, cv::Mat& _k) {
     }
 
 }
+
+void bilateral(cv::Mat& src, cv::Mat& dst, int kd, float sigmad, float sigmar) {
+
+}
