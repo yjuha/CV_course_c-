@@ -61,9 +61,10 @@ int main( int argc, char** argv ) {
     cv::Mat graygn_gf (graygn.size(), CV_32F, cv::Scalar(0));
     
     //! Apply 3x3 median filter to sp corrupted image
-    int ksize_median = 3;
+    int ksize_median = 5;
     cv::medianBlur(graysp, graysp_mf, ksize_median); 
- 
+    cv::medianBlur(graygn, graygn_mf, ksize_median);
+
     //! Apply 13x13 gaussian filter to sp corrupted image
     int ksize = 13;
     double sigma = 2.5;
@@ -71,6 +72,7 @@ int main( int argc, char** argv ) {
     cv::Mat k = cv::getGaussianKernel(ksize, sigma, ktype);
     //cv::filter2D(graysp, graysp_gf, graysp.depth(), k);
     conv2D(graysp, graysp_gf, k);
+    conv2D(graygn, graygn_mf, k);
 
     //! Convert from CV_32F to CV_8U
     cv::Mat graysp_8U;
@@ -126,32 +128,37 @@ int main( int argc, char** argv ) {
     graysp_mf *= 255.;
     graysp_mf.convertTo(graysp_mf_U8, CV_8U);
 
+    cv::Mat graysp_gf_U8;
+    graysp_gf *= 255.;
+    graysp_gf.convertTo(graysp_gf_U8, CV_8U);
+
     QGridLayout *gridLayout2 = new QGridLayout;
 
-    QLabel *tlabel4 = new QLabel;
     QLabel *tlabel5 = new QLabel;
     QLabel *tlabel6 = new QLabel;
+    QLabel *tlabel7 = new QLabel;
 
-    QLabel *qlabel4 = new QLabel;
     QLabel *qlabel5 = new QLabel;
     QLabel *qlabel6 = new QLabel;
+    QLabel *qlabel7 = new QLabel;
 
-    tlabel4->setText("original");
     tlabel5->setText("salt-and-pepper");
-    tlabel6->setText("median filtered");
+    tlabel6->setText("gaussian filtered");
+    tlabel7->setText("median filtered");
 
-    QImage qgraysp_mf_U8 = qtutils::cvmat2qimg(graysp_mf_U8);
+    QImage qgraysp_mf = qtutils::cvmat2qimg(graysp_mf_U8);
+    QImage qgraysp_gf = qtutils::cvmat2qimg(graysp_gf_U8);
 
-    qlabel4->setPixmap(QPixmap::fromImage(qimg));
     qlabel5->setPixmap(QPixmap::fromImage(qimg_sp));
-    qlabel6->setPixmap(QPixmap::fromImage(qgraysp_mf_U8));
+    qlabel6->setPixmap(QPixmap::fromImage(qgraysp_gf));
+    qlabel7->setPixmap(QPixmap::fromImage(qgraysp_mf));
 
-    gridLayout2->addWidget(tlabel4, 0, 0, 1, 1, Qt::AlignCenter);
-    gridLayout2->addWidget(tlabel5, 0, 1, 1, 1, Qt::AlignCenter);
-    gridLayout2->addWidget(tlabel6, 0, 2, 1, 1, Qt::AlignCenter);
-    gridLayout2->addWidget(qlabel4, 1, 0, 1, 1);
-    gridLayout2->addWidget(qlabel5, 1, 1, 1, 1);
-    gridLayout2->addWidget(qlabel6, 1, 2, 1, 1);
+    gridLayout2->addWidget(tlabel5, 0, 0, 1, 1, Qt::AlignCenter);
+    gridLayout2->addWidget(tlabel6, 0, 1, 1, 1, Qt::AlignCenter);
+    gridLayout2->addWidget(tlabel7, 0, 2, 1, 1, Qt::AlignCenter);
+    gridLayout2->addWidget(qlabel5, 1, 0, 1, 1);
+    gridLayout2->addWidget(qlabel6, 1, 1, 1, 1);
+    gridLayout2->addWidget(qlabel7, 1, 2, 1, 1);
 
     QWidget *w2 = new QWidget();
 
